@@ -1,0 +1,158 @@
+require('dotenv').config();
+const WebSocket = require('ws');
+const axios = require('axios');
+const mongoose = require('mongoose');
+const nodemailer = require('nodemailer');
+const cron = require('node-cron');
+
+// Configuration: adjust this threshold (in satoshis) for large transactions.
+const LARGE_TX_THRESHOLD = 1 * 1e8; // 1 BTC
+
+// MongoDB Connection
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => console.log("MongoDB connected"))
+  .catch(err => console.error("MongoDB error:", err));
+
+// Define Schemas for Blocks and Transactions
+const blockSchema = new mongoose.Schema({
+  height: Number,
+  hash: String,
+  time: Number,
+  reward: Number // block reward in satoshis
+});
+const transactionSchema = new mongoose.Schema({
+  hash: String,
+  time: Number,
+  totalOutput: Number, // total satoshis sent in this transaction
+  // you can include other fields as needed
+});
+
+const Block = mongoose.model('Block', blockSchema);
+const Transaction = mongoose.model('Transaction', transactionSchema);
+
+// Set up Nodemailer transporter for email alerts
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST, // e.g. 'smtp.mailtrap.io'
+  port: process.env.SMTP_PORT, // e.g. 2525 or 587
+  secure: false,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS
+  }
+});
+
+// Create WebSocket Server for real-time updates
+const wss = new WebSocket.Server({ port: process.env.WS_PORT || 8080 });
+wss.on("connection", (ws) => {
+  console.log("WebSocket client connected.");
+  // On connection, send latest block reward if available
+  Block.findOne().sort({ height: -1 }).then(block => {
+    if (block) {
+      ws.send(JSON.stringify({ type: "latest_block", block }));
+    }
+  });
+});
+
+// Function: Send Email Alert for a Large Transaction
+async function sendLargeTxEmail(tx) {
+  const mailOptions = {
+    from: process.env.EMAIL_FROM,
+    to: process.env.ALERT_RECIPIENT, // you can also use an array for multiple recipients
+    subject: `Large Transaction Alert: ${tx.hash}`,
+    text: `A large transaction of ${(tx.totalOutput / 1e8).toFixed(8)} BTC was detected at ${new Date(tx.time).toLocaleString()}. Transaction ID: ${tx.hash}`
+  };
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent:", info.response);
+  } catch (error) {
+    console.error("Email send error:", error);
+  }
+}
+
+// Function: Fetch Latest Bitcoin Block and Save to MongoDB
+async function fetchLatestBlock() {
+  try {
+    // Using blockchain.info for the latest block (adjust URL if needed)
+    const res = await axios.get("https://blockchain.info/latestblock");
+    const blockData = res.data;
+    const existing = await Block.findOne({ height: blockData.height });
+    if (!existing) {
+      // Now fetch full block details to get coinbase (block reward) info
+      const fullBlockRes = await axios.get(`https://blockchain.info/rawblock/${blockData.hash}`);
+      const coinbaseTx = fullBlockRes.data.tx[0]; // first tx is coinbase
+      const reward = coinbaseTx.out.reduce((sum, out) => sum + out.value, 0);
+      const newBlock = new Block({
+        height: blockData.height,
+        hash: blockData.hash,
+        time: blockData.time,
+        reward
+      });
+      await newBlock.save();
+      console.log(`Saved new block ${blockData.height} with reward ${reward / 1e8} BTC`);
+      // Broadcast new block via WebSocket
+      wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(JSON.stringify({ type: "new_block", block: newBlock }));
+        }
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching latest block:", error.message);
+  }
+}
+
+// Function: Fetch Transactions for a Specific Address
+async function fetchTransactions(address) {
+  try {
+    // Using blockchain.info raw address API (modify if you use another provider)
+    const res = await axios.get(`https://blockchain.info/rawaddr/${address}`);
+    const txs = res.data.txs;
+    for (const tx of txs) {
+      const totalOutput = tx.out.reduce((sum, out) => sum + out.value, 0);
+      const exists = await Transaction.findOne({ hash: tx.hash });
+      if (!exists) {
+        const newTx = new Transaction({
+          hash: tx.hash,
+          time: tx.time,
+          totalOutput
+        });
+        await newTx.save();
+        console.log(`Saved new transaction ${tx.hash} with output ${(totalOutput / 1e8).toFixed(8)} BTC`);
+        // Broadcast new transaction via WebSocket
+        wss.clients.forEach(client => {
+          if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify({ type: "new_transaction", transaction: newTx }));
+          }
+        });
+        // If the transaction is "large", send an email alert
+        if (totalOutput >= LARGE_TX_THRESHOLD) {
+          sendLargeTxEmail(newTx);
+          // Also broadcast an alert via WebSocket
+          wss.clients.forEach(client => {
+            if (client.readyState === WebSocket.OPEN) {
+              client.send(JSON.stringify({
+                type: "large_transaction_alert",
+                message: `Large transaction of ${(totalOutput / 1e8).toFixed(8)} BTC detected.`,
+                transaction: newTx
+              }));
+            }
+          });
+        }
+      }
+    }
+  } catch (error) {
+    console.error("Error fetching transactions:", error.message);
+  }
+}
+
+// Schedule periodic updates:
+// Check for new block and transactions every minute
+cron.schedule('* * * * *', async () => {
+  await fetchLatestBlock();
+  await fetchTransactions(process.env.BTC_ADDRESS); // Your BTC address to track
+  console.log("Data updated at", new Date().toLocaleString());
+});
+
+console.log("Backend with email alerts and WebSocket updates running...");
