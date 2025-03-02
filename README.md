@@ -1,52 +1,147 @@
-🌀  US, EU and UK sign world&#039;s first international AI treaty  🌀
+---🌀 Bitcoin Transaction Monitoring with AI-Driven Analysis
+📢 Breaking News: US, EU, and UK sign the world’s first international AI treaty
 
-https://blockchair.com/news/us-eu-and-uk-sign-world039s-first-international-ai-treaty--fd2f86e494
+📈 Cryptocurrency Prices
 
-BTC: $56660 ▪️ ETH: $2387 ▪️ XRP: $0.55 ▪️ BCH: $309
-TRANSACTION RECEIPT
-GENERATED AT 2024-10-1 07:35 (UTC)
-BLOCKCHAIN BITCOIN
-TRANSACTION ID 3ee00228009f63272b2524c9ef004efee56f871a3135 a04546af369d2ecf570e
-DATE & TIME October1, 2024 7:50 (UTC)
-TRANSACTION STATUS In block 863,605 · CONFIRMED B
-TRANSACTION FEE 0.00037028 BTC · 23.80 USD
-SENDERS (INPUTS):
-# Address Id Amount
-1 bc1qysuqaa68c092snr3wcsr5hkxg608m3m qtleuqk
-RECIPIENTS (OUTPUTS):
-- 0.91675354 BTC A 58,932.58 USD
-# Address Id Amount
-1 17XoZNnkDcCmpTg4ZLyTk76CoKQStbEce + 0.00199396 BTC A 128.17 USD
-2 bc1qn56zm7hsxzdshuxdc7s7ytcv3qznf7wntj80g3
-+ 0.00145903 BTC A 93.79 USD
-3 1AkEaH6bSm3yaefskS2JypusyDpVdSzN92 + 0.01817204 BTC A 1,168.17 USD
-4 bc1qz0dfzg5wayqarzsaws8qhtwun8hkl64 jwxpdsy
-E USD values displayed at the time of transaction
-+ 0.00024797 BTC A 15.94 USD
-1/11
-78 bc1qn56zm7hsxzdshuxdc7s7ytcv3qznf7wntj80g3 + 0.00155602 BTC A 100.02 USD
-79 bc1qn56zm7hsxzdshuxdc7s7ytcv3qznf7wntj80g3
-80 bc1qn56zm7hsxzdshuxdc7s7ytcv3qznf7wntj80g3
-81 bc1qpqlsehzrjmxhutxmlwt6tdjkwafvcgugpv5375
-82 3BFzDJzsqyT6aoPXtcLQbEGWGNPXJfoyMc
-E USD values displayed at the time of transaction
-+ 0.00059158 BTC A 38.02 USD
-+ 0.00145927 BTC A 93.80 USD
-+ 0.00063410 BTC A 40.76 USD
-+ 0.00032399 BTC A 20.82 USD
-[  ] 7/11
-# Address Id Amount
-70 bc1qn56zm7hsxzdshuxdc7s7ytcv3qznf7wntj80g3
-71 bc1qn56zm7hsxzdshuxdc7s7ytcv3qznf7wntj80g3
-72 bc1qn56zm7hsxzdshuxdc7s7ytcv3qznf7wntj80g3
-+ 0.00016039 BTC A 10.31 USD
-+ 0.00040457 BTC A 26.00 USD
-+ 0.00222129 BTC A 142.79 USD
-73 3BFzDJzsqyT6aoPXtcLQbEGWGNPXJfoyMc + 0.01556059 BTC A 1,000.29 USD
-74 bc1qpqlsehzrjmxhutxmlwt6tdjkwafvcgugpv5375 + 0.00101142 BTC A 65.01 USD
-75 bc1qpqlsehzrjmxhutxmlwt6tdjkwafvcgugpv5375
-+ 0.00199235 BTC A 128.07 USD 
-76
-bc1qpqlsehzrjmxhutxmlwt6tdjkwafvcgugpv5375 + 0.00108049 BTC A 69.45 USD
-77 bc1qpqlsehzrjmxhutxmlwt6tdjkwafvcgugpv5375
-+ 0.00145902 BTC A 93.79 USD
+BTC: $65,430
+
+ETH: $3,587
+
+XRP: $0.72
+
+BCH: $409
+
+
+
+---
+
+📝 Bitcoin Transaction Details
+
+🔄 Senders (Inputs)
+
+✅ Recipients (Outputs)
+
+📌 Total Output: 1.25643490 BTC
+
+
+---
+
+🚀 API Integration
+
+📡 Webhook for Transaction Monitoring
+
+This repository includes a real-time Bitcoin transaction webhook that integrates with Firebase and Postman for automated alerts and tracking.
+
+🔗 API Endpoint:
+
+https://your-api-url.com/webhook
+
+📌 Payload Example:
+
+{
+  "txid": "5aa9e8271bd0479823f6d7a1bc12d57fdd002ecb41a7d56cfa4b32e6f5b26dbf",
+  "block": 864900,
+  "status": "confirmed",
+  "fee": "0.00042050 BTC",
+  "inputs": [{
+      "address": "bc1qzxrtt8x2kp5gj3f4ayzjphz8k7k5lfvfwc92as",
+      "amount": "1.25678900 BTC"
+  }],
+  "outputs": [
+    { "address": "1X5qR8uCq5FqX2z3ZTnFbwRM9nDqJzL6aE", "amount": "0.50508976 BTC" },
+    { "address": "bc1qxkrjw3xzwd8x0p53msxmtfkmw7czjl3gtrknn3", "amount": "0.25123489 BTC" },
+    { "address": "3JpR5aK5yqGRzmt5XW6Ugx1HL6DVmDnt5D", "amount": "0.50011025 BTC" }
+  ]
+}
+
+
+---
+
+🤖 AI-Driven Transaction Analysis
+
+This repository integrates machine learning-based anomaly detection to:
+✅ Identify suspicious transactions
+✅ Detect abnormal spending patterns
+✅ Predict risks based on historical data
+✅ Send real-time alerts to Slack, Discord, and Telegram
+
+📊 AI Model Workflow
+
+1. Transaction Fetching – New transactions are retrieved via WebSocket
+
+
+2. Data Processing – Transactions are analyzed for unusual activity
+
+
+3. Anomaly Detection – AI model classifies transactions as normal or suspicious
+
+
+4. Risk Scoring – Assigns a risk score (1-100)
+
+
+5. Alert Triggering – If risk > 75, send alerts to Slack & Telegram
+
+
+
+🔗 AI Webhook Endpoint
+
+https://your-api-url.com/ai-analyze
+
+📌 AI Alert Example (JSON)
+
+{
+  "txid": "5aa9e8271bd0479823f6d7a1bc12d57fdd002ecb41a7d56cfa4b32e6f5b26dbf",
+  "risk_score": 82,
+  "flagged": true,
+  "reason": "Unusual transaction pattern detected.",
+  "alert_sent": true
+}
+
+🔔 Slack & Discord Alert Example
+
+🚨 *Bitcoin Transaction Alert!* 🚨
+⚠️ Risk Level: HIGH (82)
+🔍 TXID: 5aa9e8271bd0479823f6d7a1bc12d57fdd002ecb41a7d56cfa4b32e6f5b26dbf
+📊 Reason: Unusual transaction pattern detected.
+🔗 View: https://blockchair.com/bitcoin/transaction/5aa9e8271bd0479823f6d7a1bc12d57fdd002ecb41a7d56cfa4b32e6f5b26dbf
+
+
+---
+
+🐳 Docker Setup
+
+You can run this Bitcoin transaction monitoring AI using Docker.
+
+📥 Install & Run
+
+git clone https://github.com/Horlabrainmoore/Bitcoin-Tx-Monitor.git
+cd Bitcoin-Tx-Monitor
+docker-compose up -d
+
+🛠️ Docker Compose File
+
+version: '3.8'
+services:
+  bitcoin-tx-monitor:
+    image: bitcoin-tx-monitor:latest
+    container_name: bitcoin_monitor
+    ports:
+      - "5000:5000"
+    environment:
+      - API_KEY=your_api_key
+      - FIREBASE_URL=your_firebase_url
+      - POSTMAN_WEBHOOK=your_postman_webhook
+      - AI_ANALYSIS=true
+    restart: always
+
+
+---
+
+🔎 Live Monitoring & Logs
+
+For real-time logs and AI-based security scanning, use the following command:
+
+docker logs -f bitcoin_monitor
+
+
+---
